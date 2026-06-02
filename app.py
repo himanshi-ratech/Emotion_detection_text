@@ -132,7 +132,7 @@ html, body, [class*="css"] {
 </style>          
 """, unsafe_allow_html= True)
 
-# load model
+
 try: 
     model, vectorizer = load_model()
     model_loaded = True
@@ -144,7 +144,7 @@ st.markdown('<div class="hero-title">Emotion Detector</div>', unsafe_allow_html=
 
 st.markdown('<div class="hero-sub">Type any text — see the emotion behind it.</div>', unsafe_allow_html=True)
 
-# Example buttons
+
 EXAMPLES = [
     "I am so happy today!",
     "I miss you so much",
@@ -161,7 +161,6 @@ for idx, ex in enumerate(EXAMPLES):
     if cols[idx % 3].button(label, key=f"ex_{idx}"):
         st.session_state['input_text'] = ex
  
-# Text input
 user_input = st.text_area(
     "Your text",
     value=st.session_state.get('input_text', ''),
@@ -172,8 +171,6 @@ user_input = st.text_area(
  
 analyze_btn = st.button("Analyze emotion", use_container_width=False)
  
-# Prediction
-# REPLACE karo pura prediction block with this:
 if analyze_btn and user_input.strip() and model_loaded:
     with st.spinner("Analyzing..."):
         emotion, proba = predict(user_input, model, vectorizer)
@@ -186,7 +183,6 @@ if analyze_btn and user_input.strip() and model_loaded:
         key=lambda x: x[1], reverse=True
     )
 
-    # Header card alag
     st.markdown(f"""
     <div class="result-card" style="background:{cfg['bg']}">
         <div class="result-emotion" style="color:{cfg['color']}">{cfg['emoji']} {emotion.capitalize()}</div>
@@ -194,7 +190,7 @@ if analyze_btn and user_input.strip() and model_loaded:
         <hr class="divider">
     """, unsafe_allow_html=True)
 
-    # Bars alag alag render karo
+
     for emo, prob in sorted_emotions[:2]:
         pct = prob * 100
         ecfg = EMOTION_CONFIG[emo]
@@ -207,22 +203,5 @@ if analyze_btn and user_input.strip() and model_loaded:
             <div class="bar-inner" style="width:{pct:.1f}%;background:{ecfg['bar']}"></div>
         </div>
         """, unsafe_allow_html=True)
-    
-    # Sirf top emotion
-    # top_emo, top_prob = sorted_emotions[0]
-    # pct = top_prob * 100
-    # ecfg = EMOTION_CONFIG[top_emo]
-
-    # st.markdown(f"""
-    # <div class="bar-label">
-    #     <span>{ecfg['emoji']} {top_emo}</span>
-    #     <span>{pct:.1f}%</span>
-    # </div>
-    # <div class="bar-outer">
-    #     <div class="bar-inner" style="width:{pct:.1f}%;background:{ecfg['bar']}"></div>
-    # </div>
-    # """, unsafe_allow_html=True)
-    
-
-    # Card close
+ 
     st.markdown("</div>", unsafe_allow_html=True)
